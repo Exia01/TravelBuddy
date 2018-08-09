@@ -1,0 +1,1 @@
+Web app that allows signed in users to plan and add, and or, remove their own scheduled trips and join other trips planned by other users as well. 
