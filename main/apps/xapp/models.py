@@ -9,9 +9,13 @@ now = str(datetime.now())
 class UserManager(models.Manager):
 
     def regValidator(self, form):
-
         errors = []
-        if len(form['name']) < 3:
+
+        if not form['name']:
+            errors.append("Name field is required")
+        if not form['username']:
+            errors.append("Username is required")
+        if len(form['name']) < 2:
             errors.append("Name must have at least 3 characters.")
         if len(form['username']) < 2:
             errors.append("Username must have at least 3 characters.")
@@ -24,8 +28,7 @@ class UserManager(models.Manager):
 
         if not errors:
             hash1 = bcrypt.hashpw(form['pass'].encode(), bcrypt.gensalt())
-            user = User.objects.create(
-                name=form['name'], username=form['username'], password=hash1)
+            user = User.objects.create( name=form['name'], username=form['username'], password=hash1)
             return (True, user)
         else:
             return (False, errors)
@@ -35,7 +38,7 @@ class UserManager(models.Manager):
         errors = []
 
         if not form['username'] or not form['pass']:
-            errors.append('username  and password are required.')
+            errors.append('username and password are required.')
         elif not User.objects.filter(username=form['username']):
             errors.append('Please register first')
         elif len(form['pass']) < 5:
@@ -54,7 +57,6 @@ class UserManager(models.Manager):
 class TripValidator(models.Manager):
 
     def tripValidator(self, form, id):
-
         errors = []
 
         if not form['destination']:
@@ -75,7 +77,7 @@ class TripValidator(models.Manager):
         if form['endate'] < form['startdate']:
             errors.append('End date must be after start date')
 
-        if not errors: #ask why she did it that way?
+        if not errors: 
             planner = User.objects.get(id=id)
             trip = Trip.objects.create(
                 destination=form['destination'], startdate=form['startdate'], enddate=form['endate'], desc=form['desc'], planner=planner)
